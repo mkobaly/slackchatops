@@ -1,0 +1,97 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "HbOJxa+FsQ1TTsF+BkHAvzqqZv4=",
+			"path": "github.com/fatih/color",
+			"revision": "2d684516a8861da43017284349b7e303e809ac21",
+			"revisionTime": "2018-05-16T10:03:07Z"
+		},
+		{
+			"checksumSHA1": "D3HfvCEwNs7JsOi0nl1ljoRWK/I=",
+			"path": "github.com/galdor/go-cmdline",
+			"revision": "722c9cee01bb596896b994a91210faaef2a4eaae",
+			"revisionTime": "2017-09-12T14:52:02Z"
+		},
+		{
+			"checksumSHA1": "QdSIO+gp41BqNti0ZDVdXvfDvDo=",
+			"path": "github.com/gorilla/websocket",
+			"revision": "5ed622c449da6d44c3c8329331ff47a9e5844f71",
+			"revisionTime": "2018-06-05T20:25:52Z"
+		},
+		{
+			"checksumSHA1": "SEnjvwVyfuU2xBaOfXfwPD5MZqk=",
+			"path": "github.com/mattn/go-colorable",
+			"revision": "efa589957cd060542a26d2dd7832fd6a6c6c3ade",
+			"revisionTime": "2018-03-10T13:32:14Z"
+		},
+		{
+			"checksumSHA1": "w5RcOnfv5YDr3j2bd1YydkPiZx4=",
+			"path": "github.com/mattn/go-isatty",
+			"revision": "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c",
+			"revisionTime": "2017-11-07T05:05:31Z"
+		},
+		{
+			"checksumSHA1": "u1VzxDdGLrpO0C1FS5yfxxi7igs=",
+			"path": "github.com/nlopes/slack",
+			"revision": "21749ab136a8739656c58a53e95836f9ce280a13",
+			"revisionTime": "2018-08-02T12:53:01Z"
+		},
+		{
+			"checksumSHA1": "ljd3FhYRJ91cLZz3wsH9BQQ2JbA=",
+			"path": "github.com/pkg/errors",
+			"revision": "816c9085562cd7ee03e7f8188a1cfd942858cded",
+			"revisionTime": "2018-03-11T21:45:15Z"
+		},
+		{
+			"checksumSHA1": "uNZ/uGoQGZtr56/d/vlhe1YHdcg=",
+			"path": "github.com/shomali11/commander",
+			"revision": "384535f6562b1b98294d1e6db8d1d5365b79915c",
+			"revisionTime": "2018-06-07T00:56:40Z"
+		},
+		{
+			"checksumSHA1": "L1Hps/a38Xb3/1Hj8RO6UZuINbA=",
+			"path": "github.com/shomali11/proper",
+			"revision": "233a9a872c306ae145fed0a7d71afc128ad78394",
+			"revisionTime": "2018-06-07T00:47:33Z"
+		},
+		{
+			"checksumSHA1": "IwGlxA0NueycqAnkOK4EAOaaXB8=",
+			"path": "github.com/shomali11/slacker",
+			"revision": "a446a9d74017c570301ba4a9db3bc775bcea7f97",
+			"revisionTime": "2018-08-05T02:37:17Z"
+		},
+		{
+			"checksumSHA1": "rdXBSMsIpX89xZS5rUwnBGZOe+Q=",
+			"path": "github.com/sirupsen/logrus",
+			"revision": "d329d24db4313262a3b0a24d8aeb1dc4bd294fb0",
+			"revisionTime": "2018-07-31T16:13:55Z"
+		},
+		{
+			"checksumSHA1": "BGm8lKZmvJbf/YOJLeL1rw2WVjA=",
+			"path": "golang.org/x/crypto/ssh/terminal",
+			"revision": "f027049dab0ad238e394a753dba2d14753473a04",
+			"revisionTime": "2018-08-06T08:54:14Z"
+		},
+		{
+			"checksumSHA1": "+1Q0yX5irPpjmlGbgnEdozRQQCM=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "904bdc257025c7b3f43c19360ad3ab85783fad78",
+			"revisionTime": "2018-08-08T08:17:46Z"
+		},
+		{
+			"checksumSHA1": "Hi7BmkvZh4plNNLGDHfPnCKy3i8=",
+			"path": "golang.org/x/sys/windows",
+			"revision": "904bdc257025c7b3f43c19360ad3ab85783fad78",
+			"revisionTime": "2018-08-08T08:17:46Z"
+		},
+		{
+			"checksumSHA1": "ZSWoOPUNRr5+3dhkLK3C4cZAQPk=",
+			"path": "gopkg.in/yaml.v2",
+			"revision": "5420a8b6744d3b0345ab293f6fcba19c978f1183",
+			"revisionTime": "2018-03-28T19:50:20Z"
+		}
+	],
+	"rootPath": "github.com/mkobaly/slackchatops"
+}
