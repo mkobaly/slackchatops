@@ -2,25 +2,23 @@ package main
 
 import (
 	"io/ioutil"
+	"runtime"
 
 	chatops "github.com/mkobaly/slackchatops"
 	yaml "gopkg.in/yaml.v2"
 )
 
+// Config represents all of the settings needed to run the chatOps application
 type Config struct {
 	SlackToken   string
 	SlackChannel string
 	Actions      []chatops.Action
 }
 
+//TODO: Not used yet. Ideally want to have conditions for Actions. Say approval needed before running action
 type Condition interface {
 	OkToRun() bool
 }
-
-// type Action struct {
-// 	Command    string
-// 	OutputFile string
-// }
 
 // Write will save the configuration to the given path
 func (c *Config) Write(path string) error {
@@ -42,10 +40,19 @@ func (c *Config) Print() (string, error) {
 
 //NewConfig creates a new Configuration object needed
 func NewConfig() *Config {
-	//config := Config{}
 	var config = &Config{
-		SlackToken: "<YOUR SLACK BOT TOKEN>",
+		SlackToken:   "<YOUR SLACK BOT TOKEN>",
+		SlackChannel: "<SLACK CHANNEL>",
 	}
+	var actions []chatops.Action
+	if runtime.GOOS == "windows" {
+		actions = append(actions, chatops.Action{Command: "cmd", Description: "Show your IP address(s)", Args: []string{"/C", "ipconfig"}})
+		actions = append(actions, chatops.Action{Command: "cmd", Description: "List directory content", Args: []string{"/C", "dir"}})
+	} else {
+		actions = append(actions, chatops.Action{Command: "ifconfig", Description: "Show your IP address(s)"})
+		actions = append(actions, chatops.Action{Command: "ls", Description: "List directory content", Args: []string{"-la"}})
+	}
+	config.Actions = actions
 	return config
 }
 
