@@ -39,7 +39,7 @@ Within your slack application click the  "+ Add Apps" link and browse for  'Bots
 
 https://[YOUR_DOMAIN].slack.com/apps/A0F7YS25R-bots
 
-Click "Add Configuration" and choose a username for your Bot
+Click "Add Configuration" and choose a username for your Bot (Assuming chatops)
 
 Copy the API Token as you will need to add that to your configuration created above
 
