@@ -9,12 +9,12 @@ import (
 
 // Action represents what the system should perform. This is typically some type of command
 type Action struct {
-	Name        string   // name of the action
+	Name        string   // friendly name of the action
 	Description string   // description of the action
 	Command     string   // actual command being called
 	WorkingDir  string   // working directory for the command to be called in
 	Params      []string // parameters the command needs to run. When executed the user will pass these in as arguments. They will be appended to the Args list
-	Args        []string // arguments to pass to the command. If any are predefined in the config.yaml file (defaults) any user passed args (dictated by params) will be appended
+	Args        []string // arguments to pass to the command. If any are predefined in the config.yaml file (defaults) then user passed arguments (Params) will be appended to the end
 	OutputFile  string   // if the command being executed writes to a file. StdErr and StdOut are already captured. This could be an html document from a set of unit tests for example
 }
 

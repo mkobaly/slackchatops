@@ -39,7 +39,9 @@ func main() {
 	if _, err := os.Stat(cfgPath); os.IsNotExist(err) {
 		config := NewConfig()
 		config.Write(cfgPath)
+		color.Yellow("---------------------------------------------------------------------------------")
 		color.Yellow("config.yaml not present. One was just created for you. Please edit it accordingly")
+		color.Yellow("---------------------------------------------------------------------------------")
 		os.Exit(0)
 	}
 
@@ -47,9 +49,7 @@ func main() {
 
 	// Load up configuration file
 	config := LoadConfig(cfgPath)
-
 	bot := slacker.NewClient(config.SlackToken)
-
 	bot.Help(helpHandler(bot, config.SlackChannel))
 
 	for _, a := range config.Actions {
@@ -57,7 +57,6 @@ func main() {
 		if description == "" {
 			description = a.Name
 		}
-
 		params := ""
 		for _, p := range a.Params {
 			params += " <" + p + ">"
@@ -68,11 +67,13 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	if config.SlackChannel != "" {
+		color.Yellow("only listening on slack channel " + config.SlackChannel)
+	}
 	err := bot.Listen(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 // overridding default help handler to ensure we only resond to correct channel
