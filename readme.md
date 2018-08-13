@@ -75,3 +75,5 @@ https://yourdomain.slack.com/messages/GC6AAAAAA/team/U0000000/
 
 - [ ] Permission restricted actions. Useful for production actions
 - [ ] Custom output formatters for Slack
+- [ ] Feedback for long running actions
+- [ ] State management / persistance
