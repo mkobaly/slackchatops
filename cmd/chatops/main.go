@@ -23,6 +23,8 @@ const (
 	newLine = "\n"
 )
 
+var running bool
+
 func main() {
 	//Define command line params and parse input
 	cmdline := cmdline.New()
@@ -79,6 +81,7 @@ func main() {
 // overridding default help handler to ensure we only resond to correct channel
 func helpHandler(s *slacker.Slacker, channel string) func(slacker.Request, slacker.ResponseWriter) {
 	return func(request slacker.Request, response slacker.ResponseWriter) {
+		//ensure only running for specified channel
 		if channel != "" && channel != request.Event().Channel {
 			return
 		}
@@ -100,8 +103,13 @@ func helpHandler(s *slacker.Slacker, channel string) func(slacker.Request, slack
 
 func handler(a chatops.Action, channel string, log *logrus.Entry) func(slacker.Request, slacker.ResponseWriter) {
 	return func(request slacker.Request, response slacker.ResponseWriter) {
-
+		//ensure only running for specified channel
 		if channel != "" && channel != request.Event().Channel {
+			return
+		}
+
+		if running {
+			response.Reply("Busy with another action. Please wait...")
 			return
 		}
 
@@ -113,7 +121,10 @@ func handler(a chatops.Action, channel string, log *logrus.Entry) func(slacker.R
 			args = append(args, parts...)
 		}
 
+		running = true
+		response.Typing()
 		result, err := a.Run(args...)
+		running = false
 
 		response.Reply("*ExitCode: " + strconv.Itoa(result.ReturnCode) + "*")
 		response.Reply("_Output:_\n" + result.StdOut)
