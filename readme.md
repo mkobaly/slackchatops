@@ -1,7 +1,11 @@
 # SlackChatOps
 
 Easy to use Slack bot used for chatOps. This bot can be configured to run any number of actions via Slack
-and report the results back. All actions are configured via the config.yaml file
+and report the results back. All actions are configured via the config.yaml file giving you unlimited possibilities.
+
+This is built on top of the below project that makes it easy to execute commands via Slack.
+https://github.com/shomali11/slacker
+
 
 ## Building
 
@@ -19,7 +23,7 @@ Upon first run the application will exit and inform you the configuration file (
 A sample config file will be created for you in the current directory. By default a few actions have been created
 as samples
 
-An action is defined below. 
+An action is defined as
 ```
 // Action represents what the system should perform. This is typically some type of command
 type Action struct {
@@ -45,7 +49,7 @@ Copy the API Token as you will need to add that to your configuration created ab
 
 ### Channel specific bot
 
-Setting the "slackchannel" value is optional and will make this bot only respond to commands for the given channel. THIS IS RECOMMENDED or else if you run multiple chatBots they all will respond.
+Within the config.yaml file the "slackchannel" value is optional and will make this bot only respond to commands for the given channel. THIS IS RECOMMENDED or else if you run multiple chatBots they all will respond.
 
 
 ## Typical setup

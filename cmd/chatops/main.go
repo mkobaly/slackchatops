@@ -127,7 +127,9 @@ func handler(a chatops.Action, channel string, log *logrus.Entry) func(slacker.R
 		running = false
 
 		response.Reply("*ExitCode: " + strconv.Itoa(result.ReturnCode) + "*")
-		response.Reply("_Output:_\n" + result.StdOut)
+		if result.StdOut != "" {
+			response.Reply("_Output:_\n" + result.StdOut)
+		}
 		if err != nil {
 			response.Reply("_Error:_\n" + err.Error())
 		}
