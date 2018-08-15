@@ -24,11 +24,13 @@ const (
 )
 
 var running bool
+var debugging bool
 
 func main() {
 	//Define command line params and parse input
 	cmdline := cmdline.New()
 	cmdline.AddOption("c", "config", "config.yaml", "Path to configuration file")
+	cmdline.AddFlag("d", "debug", "Log additional information for debugging purposes")
 	cmdline.Parse(os.Args)
 
 	//Load up configuration. This holds TeamCity and Emitter info
@@ -48,6 +50,7 @@ func main() {
 	}
 
 	log := chatops.NewLogger("chatops")
+	debugging = cmdline.IsOptionSet("d")
 
 	// Load up configuration file
 	config := LoadConfig(cfgPath)
@@ -81,6 +84,7 @@ func main() {
 // overridding default help handler to ensure we only resond to correct channel
 func helpHandler(s *slacker.Slacker, channel string) func(slacker.Request, slacker.ResponseWriter) {
 	return func(request slacker.Request, response slacker.ResponseWriter) {
+		debug("In help handler: Channel:" + request.Event().Channel)
 		//ensure only running for specified channel
 		if channel != "" && channel != request.Event().Channel {
 			return
@@ -103,6 +107,8 @@ func helpHandler(s *slacker.Slacker, channel string) func(slacker.Request, slack
 
 func handler(a chatops.Action, channel string, log *logrus.Entry) func(slacker.Request, slacker.ResponseWriter) {
 	return func(request slacker.Request, response slacker.ResponseWriter) {
+
+		debug("In handler: Channel:" + request.Event().Channel)
 		//ensure only running for specified channel
 		if channel != "" && channel != request.Event().Channel {
 			return
@@ -113,7 +119,7 @@ func handler(a chatops.Action, channel string, log *logrus.Entry) func(slacker.R
 			return
 		}
 
-		log.WithFields(logrus.Fields{"request": request}).Info(a.Name)
+		log.WithFields(logrus.Fields{"command": a.Name}).Info("InHandler")
 		var args []string
 		for _, p := range a.Params {
 			arg := request.StringParam(p, "")
@@ -123,6 +129,7 @@ func handler(a chatops.Action, channel string, log *logrus.Entry) func(slacker.R
 
 		running = true
 		response.Typing()
+		debugf("Args: %v", args)
 		result, err := a.Run(args...)
 		running = false
 
@@ -131,7 +138,7 @@ func handler(a chatops.Action, channel string, log *logrus.Entry) func(slacker.R
 			response.Reply("_Output:_\n" + result.StdOut)
 		}
 		if err != nil {
-			response.Reply("_Error:_\n" + err.Error())
+			response.Reply("_Error:_\n" + result.StdError)
 		}
 
 		//is there a file to upload (say test results)
@@ -143,5 +150,17 @@ func handler(a chatops.Action, channel string, log *logrus.Entry) func(slacker.R
 			client.UploadFile(slack.FileUploadParameters{File: a.OutputFile, Channels: []string{channel}})
 			os.Remove(a.OutputFile)
 		}
+	}
+}
+
+func debug(msg string) {
+	if debugging {
+		fmt.Println(msg)
+	}
+}
+
+func debugf(format string, a ...interface{}) {
+	if debugging {
+		fmt.Printf(format+"\n", a)
 	}
 }
