@@ -1,7 +1,8 @@
 # SlackChatOps
 
-Easy to use Slack bot used for chatOps. This bot can be configured to run any number of actions via Slack
-and report the results back. All actions are configured via the config.yaml file giving you unlimited possibilities.
+ChatOps made easy. This is a zero coding required Slack bot to simplify your devops needs. This Slack bot can be configured to run any number of actions against a server. All actions are configured via the config.yaml file giving you unlimited actions and possibilities.
+
+For example, say you want to deploy your latest code against your development server. Let Slack do that for you. If your code can be deployed via the command line it can be run here.
 
 This is built on top of the below project that makes it easy to execute commands via Slack.
 https://github.com/shomali11/slacker
@@ -27,13 +28,14 @@ An action is defined as
 ```
 // Action represents what the system should perform. This is typically some type of command
 type Action struct {
-	Name        string   // friendly name of the action
-	Description string   // description of the action
-	Command     string   // actual command being called
-	WorkingDir  string   // working directory for the command to be called in
-	Params      []string // parameters the command needs to run. When executed the user will pass these in as arguments. They will be appended to the Args list
-	Args        []string // arguments to pass to the command. If any are predefined in the config.yaml file (defaults) then user passed arguments (Params) will be appended to the end
-	OutputFile  string   // if the command being executed writes to a file. StdErr and StdOut are already captured. This could be an html document from a set of unit tests for example
+	Name            string   // friendly name of the action
+	Description     string   // description of the action
+	Command         string   // actual command being called
+	WorkingDir      string   // working directory for the command to be called in
+	Params          []string // parameters the command needs to run. When executed the user will pass these in as arguments. They will be appended to the Args list
+	Args            []string // arguments to pass to the command. If any are predefined in the config.yaml file (defaults) then user passed arguments (Params) will be appended to the end
+	OutputFile      string   // if the command being executed writes to a file. StdErr and StdOut are already captured. This could be an html document from a set of unit tests for example
+	AuthorizedUsers []string // list of autorized users that are allowed to execute this action. This should be their slackId
 }
 ```
 
@@ -77,7 +79,7 @@ https://yourdomain.slack.com/messages/GC6AAAAAA/team/U0000000/
 
 ## TODOs
 
-- [ ] Permission restricted actions. Useful for production actions
+- [X] Permission restricted actions. Useful for production actions
 - [ ] Custom output formatters for Slack
-- [ ] Feedback for long running actions
+- [X] Feedback for long running actions
 - [ ] State management / persistance

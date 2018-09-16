@@ -16,9 +16,9 @@ type Config struct {
 }
 
 //TODO: Not used yet. Ideally want to have conditions for Actions. Say approval needed before running action
-type Condition interface {
-	OkToRun() bool
-}
+// type Condition interface {
+// 	OkToRun() bool
+// }
 
 // Write will save the configuration to the given path
 func (c *Config) Write(path string) error {
@@ -46,11 +46,11 @@ func NewConfig() *Config {
 	}
 	var actions []chatops.Action
 	if runtime.GOOS == "windows" {
-		actions = append(actions, chatops.Action{Command: "cmd", Description: "Show your IP address(s)", Args: []string{"/C", "ipconfig"}})
-		actions = append(actions, chatops.Action{Command: "cmd", Description: "List directory content", Args: []string{"/C", "dir"}})
+		actions = append(actions, chatops.Action{Name: "ip", Command: "cmd", Description: "Show your IP address(s)", Args: []string{"/C", "ipconfig"}})
+		actions = append(actions, chatops.Action{Name: "dir", Command: "cmd", Description: "List directory content", AuthorizedUsers: []string{"UC1111111"}, Args: []string{"/C", "dir"}})
 	} else {
-		actions = append(actions, chatops.Action{Command: "ifconfig", Description: "Show your IP address(s)"})
-		actions = append(actions, chatops.Action{Command: "ls", Description: "List directory content", Args: []string{"-la"}})
+		actions = append(actions, chatops.Action{Name: "ip", Command: "ifconfig", Description: "Show your IP address(s)"})
+		actions = append(actions, chatops.Action{Name: "ls", Command: "ls", Description: "List directory content", AuthorizedUsers: []string{"UC1111111"}, Args: []string{"-la"}})
 	}
 	config.Actions = actions
 	return config

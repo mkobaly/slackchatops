@@ -33,7 +33,7 @@ func main() {
 	cmdline.AddFlag("d", "debug", "Log additional information for debugging purposes")
 	cmdline.Parse(os.Args)
 
-	//Load up configuration. This holds TeamCity and Emitter info
+	//Load up configuration
 	cfgPath := "./config.yaml"
 	if cmdline.IsOptionSet("c") {
 		cfgPath = cmdline.OptionValue("c")
@@ -56,6 +56,14 @@ func main() {
 	config := LoadConfig(cfgPath)
 	bot := slacker.NewClient(config.SlackToken)
 	bot.Help(helpHandler(bot, config.SlackChannel))
+	bot.DefaultCommand(func(request slacker.Request, response slacker.ResponseWriter) {
+		attachments := []slack.Attachment{}
+		attachments = append(attachments, slack.Attachment{
+			Color: "warning",
+			Title: "Unknown action",
+		})
+		response.Reply("", slacker.WithAttachments(attachments))
+	})
 
 	for _, a := range config.Actions {
 		description := a.Description
@@ -116,6 +124,29 @@ func handler(a chatops.Action, channel string, log *logrus.Entry) func(slacker.R
 
 		if running {
 			response.Reply("Busy with another action. Please wait...")
+			return
+		}
+
+		authorized := true //Default to true. Only when action has restriction do we limit access
+
+		//This action has authorization check. Ensure user is part of authorized user list
+		if len(a.AuthorizedUsers) > 0 {
+			authorized = false
+			user := request.Event().User
+			for _, u := range a.AuthorizedUsers {
+				if user == u {
+					authorized = true
+				}
+			}
+		}
+
+		if !authorized {
+			attachments := []slack.Attachment{}
+			attachments = append(attachments, slack.Attachment{
+				Color: "danger",
+				Title: "You are not authorized to execute this action",
+			})
+			response.Reply("", slacker.WithAttachments(attachments))
 			return
 		}
 
