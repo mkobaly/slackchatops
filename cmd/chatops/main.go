@@ -57,6 +57,10 @@ func main() {
 	bot := slacker.NewClient(config.SlackToken)
 	bot.Help(helpHandler(bot, config.SlackChannel))
 	bot.DefaultCommand(func(request slacker.Request, response slacker.ResponseWriter) {
+
+		if config.SlackChannel != "" && config.SlackChannel != request.Event().Channel {
+			return
+		}
 		attachments := []slack.Attachment{}
 		attachments = append(attachments, slack.Attachment{
 			Color: "warning",
@@ -172,14 +176,15 @@ func handler(a chatops.Action, channel string, log *logrus.Entry) func(slacker.R
 			response.Reply("_Error:_\n" + result.StdError)
 		}
 
+		outputFile, _ := chatops.ExpandPath(a.OutputFile)
 		//is there a file to upload (say test results)
-		if _, err := os.Stat(a.OutputFile); err == nil {
+		if _, err := os.Stat(outputFile); err == nil {
 			rtm := response.RTM()
 			client := response.Client()
 
 			rtm.SendMessage(rtm.NewOutgoingMessage("Uploading output file ...", request.Event().Channel))
-			client.UploadFile(slack.FileUploadParameters{File: a.OutputFile, Channels: []string{channel}})
-			os.Remove(a.OutputFile)
+			client.UploadFile(slack.FileUploadParameters{File: outputFile, Channels: []string{channel}})
+			os.Remove(outputFile)
 		}
 	}
 }

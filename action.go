@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"log"
 	"os/exec"
+	"os/user"
+	"path/filepath"
 	"syscall"
 )
 
@@ -30,7 +32,8 @@ type Result struct {
 func (a *Action) Run(args ...string) (Result, error) {
 	cmd := exec.Command(a.Command, append(a.Args, args...)...)
 	if a.WorkingDir != "" {
-		cmd.Dir = a.WorkingDir
+		path, _ := ExpandPath(a.WorkingDir)
+		cmd.Dir = path
 	}
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
@@ -66,4 +69,16 @@ func (a *Action) Run(args ...string) (Result, error) {
 		StdError:   errStr,
 		StdOut:     outStr,
 	}, err
+}
+
+func ExpandPath(path string) (string, error) {
+	if len(path) == 0 || path[0] != '~' {
+		return path, nil
+	}
+
+	usr, err := user.Current()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(usr.HomeDir, path[1:]), nil
 }
