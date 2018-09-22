@@ -2,10 +2,13 @@ package slackchatops
 
 import (
 	"bytes"
+	"errors"
 	"log"
 	"os/exec"
 	"os/user"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"syscall"
 )
 
@@ -30,7 +33,8 @@ type Result struct {
 
 // Run actually executes the command
 func (a *Action) Run(args ...string) (Result, error) {
-	cmd := exec.Command(a.Command, append(a.Args, args...)...)
+	mergedArgs := a.ParseArgs(args)
+	cmd := exec.Command(a.Command, mergedArgs...)
 	if a.WorkingDir != "" {
 		path, _ := ExpandPath(a.WorkingDir)
 		cmd.Dir = path
@@ -70,6 +74,58 @@ func (a *Action) Run(args ...string) (Result, error) {
 		StdOut:     outStr,
 	}, err
 }
+
+// ValidateArgs will ensure all tokenized parameters {x} have been replaced
+func (a *Action) ValidateArgs() error {
+	args := a.ParseArgs(a.Params)
+	for i := 0; i < 20; i++ { //choosing arbitrary number (20)
+		p := "{" + strconv.Itoa(i) + "}"
+		for _, ar := range args {
+			if strings.Contains(ar, p) {
+				return errors.New("Action " + a.Name + " missing parameter replacement")
+			}
+		}
+	}
+	return nil
+}
+
+// ParseArgs will combine the the user input with the parameters to
+// generate the final argument list
+func (a *Action) ParseArgs(args []string) []string {
+	result := []string{}
+	result = append(result, a.Args...)
+	if len(args) == 0 {
+		return result
+	}
+
+	for i, arg := range args {
+		for j, argDef := range result {
+			replace := "{" + strconv.Itoa(i) + "}"
+			result[j] = strings.Replace(argDef, replace, arg, -1)
+		}
+	}
+	return result
+}
+
+// func (a *Action) MergeArgs(args []string) ([]string, error) {
+// 	var result []string
+// 	if len(args) == 0 {
+// 		return a.Args, nil
+// 	}
+// 	for _, arg := range a.Args {
+// 		if strings.HasPrefix(arg, "$") {
+// 			arg1 := strings.Replace(arg, "$", "", -1)
+// 			i, err := strconv.Atoi(arg1)
+// 			if err != nil {
+// 				return nil, err
+// 			}
+// 			result = append(result, args[i-1])
+// 		} else {
+// 			result = append(result, arg)
+// 		}
+// 	}
+// 	return result, nil
+// }
 
 func ExpandPath(path string) (string, error) {
 	if len(path) == 0 || path[0] != '~' {

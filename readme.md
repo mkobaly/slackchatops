@@ -32,11 +32,31 @@ type Action struct {
 	Description     string   // description of the action
 	Command         string   // actual command being called
 	WorkingDir      string   // working directory for the command to be called in
-	Params          []string // parameters the command needs to run. When executed the user will pass these in as arguments. They will be appended to the Args list
-	Args            []string // arguments to pass to the command. If any are predefined in the config.yaml file (defaults) then user passed arguments (Params) will be appended to the end
+	Params          []string // parameters the command needs to run. When executed the user will pass these in as arguments. 
+	Args            []string // arguments to pass to the command. There NEEDs to be at least as many args as parameters (see below)
 	OutputFile      string   // if the command being executed writes to a file. StdErr and StdOut are already captured. This could be an html document from a set of unit tests for example
 	AuthorizedUsers []string // list of autorized users that are allowed to execute this action. This should be their slackId
 }
+```
+
+## Parameter replacement
+
+For arguments that are passed in from the user as parameters they need to be tokenized using {x} format. For example. If we want to execute the
+list command for a given directory 
+
+```sh
+ls /tmp -la
+```
+
+```yaml
+- name: List
+  description: List info about files
+  command: ls
+  params:
+  - param1
+  args:
+  - {0}
+  - -la
 ```
 
 ## Slack Setup
