@@ -78,6 +78,14 @@ func main() {
 		for _, p := range a.Params {
 			params += " <" + p + ">"
 		}
+		err := a.ValidateArgs()
+		if err != nil {
+			color.Yellow("---------------------------------------------------------------------------------")
+			color.Yellow("An action within config.yaml is not parameterized correctly")
+			color.Yellow(err.Error())
+			color.Yellow("---------------------------------------------------------------------------------")
+			os.Exit(1)
+		}
 		bot.Command(a.Name+params, description, handler(a, config.SlackChannel, log))
 	}
 

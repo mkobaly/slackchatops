@@ -2,7 +2,7 @@ package slackchatops
 
 import (
 	"bytes"
-	"errors"
+	"fmt"
 	"log"
 	"os/exec"
 	"os/user"
@@ -77,12 +77,28 @@ func (a *Action) Run(args ...string) (Result, error) {
 
 // ValidateArgs will ensure all tokenized parameters {x} have been replaced
 func (a *Action) ValidateArgs() error {
+	//ensure given number of params we have same number of tokens
+	for i := 0; i < len(a.Params); i++ {
+		p := "{" + strconv.Itoa(i) + "}"
+		valid := false
+		for _, ar := range a.Args {
+			if strings.Contains(ar, p) {
+				valid = true
+				break
+			}
+		}
+		if !valid {
+			return fmt.Errorf("Action %s is missing argument %s for parameter %s", a.Name, p, a.Params[i])
+		}
+	}
+
+	//Now parse args and ensure
 	args := a.ParseArgs(a.Params)
 	for i := 0; i < 20; i++ { //choosing arbitrary number (20)
 		p := "{" + strconv.Itoa(i) + "}"
 		for _, ar := range args {
 			if strings.Contains(ar, p) {
-				return errors.New("Action " + a.Name + " missing parameter replacement")
+				return fmt.Errorf("Action %s has too many tokenized arguments. %s is not used", a.Name, p)
 			}
 		}
 	}
